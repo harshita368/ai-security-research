@@ -24,6 +24,7 @@
       "dependencies": {
         "@agent/analyzers-secret": "workspace:*",
         "@agent/core": "workspace:*",
+        "@agent/orchestrator": "workspace:*",
         "@agent/patcher": "workspace:*",
         "@agent/sandbox": "workspace:*",
       },
@@ -45,6 +46,15 @@
     "packages/git": {
       "name": "@agent/git",
       "version": "0.1.0",
+    },
+    "packages/orchestrator": {
+      "name": "@agent/orchestrator",
+      "version": "0.1.0",
+      "dependencies": {
+        "@agent/core": "workspace:*",
+        "@agent/patcher": "workspace:*",
+        "@agent/sandbox": "workspace:*",
+      },
     },
     "packages/patcher": {
       "name": "@agent/patcher",
@@ -69,6 +79,8 @@
     "@agent/core": ["@agent/core@workspace:packages/core"],
 
     "@agent/git": ["@agent/git@workspace:packages/git"],
+
+    "@agent/orchestrator": ["@agent/orchestrator@workspace:packages/orchestrator"],
 
     "@agent/patcher": ["@agent/patcher@workspace:packages/patcher"],
 

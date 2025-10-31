@@ -1,4 +1,5 @@
-import type { ValidationResult } from "@agent/core";
+import type { ValidationResult, VulnerabilityFinding } from "@agent/core";
+import { readFileSync } from "node:fs";
 
 export interface Sandbox {
   run(command: string, args?: string[], opts?: { cwd?: string; timeoutMs?: number }): Promise<{
@@ -14,6 +15,14 @@ export class NoopSandbox implements Sandbox {
   }
 }
 
-export async function validateFinding(): Promise<ValidationResult> {
-  return { findingId: "unknown", status: "inconclusive" };
+export async function validateFinding(repoRoot: string, finding: VulnerabilityFinding): Promise<ValidationResult> {
+  try {
+    const filePath = `${repoRoot}/${finding.file}`;
+    const text = readFileSync(filePath, "utf8");
+    const line = text.split(/\r?\n/)[finding.lineStart - 1] ?? "";
+    const matched = Boolean(line && line.includes(finding.evidence ?? ""));
+    return { findingId: finding.id, status: matched ? "confirmed" : "invalid" };
+  } catch (e) {
+    return { findingId: finding.id, status: "inconclusive", details: String(e) };
+  }
 }
