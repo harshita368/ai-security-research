@@ -38,6 +38,13 @@
     "packages/core": {
       "name": "@agent/core",
       "version": "0.1.0",
+      "dependencies": {
+        "@agent/git": "workspace:*",
+      },
+    },
+    "packages/git": {
+      "name": "@agent/git",
+      "version": "0.1.0",
     },
     "packages/patcher": {
       "name": "@agent/patcher",
@@ -60,6 +67,8 @@
     "@agent/analyzers-secret": ["@agent/analyzers-secret@workspace:packages/analyzers-secret"],
 
     "@agent/core": ["@agent/core@workspace:packages/core"],
+
+    "@agent/git": ["@agent/git@workspace:packages/git"],
 
     "@agent/patcher": ["@agent/patcher@workspace:packages/patcher"],
 

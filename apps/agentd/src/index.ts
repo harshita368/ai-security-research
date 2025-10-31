@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { Agent } from "@agent/core";
+import { Agent, scanCommitDiff } from "@agent/core";
 import SecretAnalyzer from "@agent/analyzers-secret";
 
 function parseArgs(argv: string[]) {
@@ -19,7 +19,7 @@ function parseArgs(argv: string[]) {
 async function main() {
   const { cmd, opts } = parseArgs(process.argv);
   if (cmd === "help" || cmd === "--help" || cmd === "-h") {
-    console.log("Usage: agentd <analyze|scan> --repo <path>");
+    console.log("Usage: agentd <analyze|scan|scan-commit> --repo <path> [--base <ref> --head <ref>]");
     process.exit(0);
   }
   const repo = opts["repo"];
@@ -35,6 +35,17 @@ async function main() {
   }
   if (cmd === "scan") {
     const findings = await agent.scan({ localPath: repo });
+    console.log(JSON.stringify(findings, null, 2));
+    return;
+  }
+  if (cmd === "scan-commit") {
+    const base = opts["base"];
+    const head = opts["head"] || "HEAD";
+    if (!base) {
+      console.error("--base <git ref/sha> required for scan-commit");
+      process.exit(2);
+    }
+    const findings = await scanCommitDiff({ localPath: repo }, base, head, [SecretAnalyzer]);
     console.log(JSON.stringify(findings, null, 2));
     return;
   }
