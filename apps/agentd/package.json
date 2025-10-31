@@ -1,0 +1,21 @@
+{
+  "name": "@agent/agentd",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "bin": {
+    "agentd": "dist/index.js"
+  },
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -b",
+    "typecheck": "tsc -b"
+  },
+  "dependencies": {
+    "@agent/core": "workspace:*",
+    "@agent/analyzers-secret": "workspace:*",
+    "@agent/sandbox": "workspace:*",
+    "@agent/patcher": "workspace:*"
+  }
+}

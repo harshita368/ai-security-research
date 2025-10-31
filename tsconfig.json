@@ -1,0 +1,10 @@
+{
+  "files": [],
+  "references": [
+    { "path": "./packages/core" },
+    { "path": "./packages/patcher" },
+    { "path": "./packages/sandbox" },
+    { "path": "./packages/analyzers-secret" },
+    { "path": "./apps/agentd" }
+  ]
+}
