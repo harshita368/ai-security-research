@@ -1,0 +1,16 @@
+{
+  "name": "@agent/gh-webhook",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "dist/server.js",
+  "types": "dist/server.d.ts",
+  "scripts": {
+    "build": "tsc -b",
+    "typecheck": "tsc -b"
+  },
+  "dependencies": {
+    "@agent/core": "workspace:*",
+    "@agent/analyzers-secret": "workspace:*"
+  }
+}

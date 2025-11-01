@@ -1,4 +1,4 @@
-import { Analyzer, RepositoryRef, VulnerabilityFinding } from "./index";
+import type { Analyzer, RepositoryRef, VulnerabilityFinding } from "./index";
 import { diffAddedLines, FileHunks } from "@agent/git";
 
 function isInChangedHunks(file: string, line: number, map: FileHunks) {
@@ -17,10 +17,12 @@ export async function scanCommitDiff(
   analyzers: Analyzer[],
 ): Promise<VulnerabilityFinding[]> {
   const map = diffAddedLines(repo.localPath, base, head);
-  // Run full analysis then filter to changed lines
+// Run full analysis then filter to changed lines
   const results = await Promise.all(
     analyzers.map((a) => a.analyze(repo, { description: "", securityObjectives: [], attackSurfaces: [], technologies: [] })),
   );
   const all = results.flat();
   return all.filter((f) => isInChangedHunks(f.file, f.lineStart, map));
 }
+
+export default scanCommitDiff;

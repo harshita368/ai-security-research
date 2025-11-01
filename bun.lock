@@ -29,6 +29,14 @@
         "@agent/sandbox": "workspace:*",
       },
     },
+    "apps/gh-webhook": {
+      "name": "@agent/gh-webhook",
+      "version": "0.1.0",
+      "dependencies": {
+        "@agent/analyzers-secret": "workspace:*",
+        "@agent/core": "workspace:*",
+      },
+    },
     "packages/analyzers-secret": {
       "name": "@agent/analyzers-secret",
       "version": "0.1.0",
@@ -78,9 +86,11 @@
 
     "@agent/core": ["@agent/core@workspace:packages/core"],
 
-    "@agent/git": ["@agent/git@workspace:packages/git"],
-
-    "@agent/orchestrator": ["@agent/orchestrator@workspace:packages/orchestrator"],
+{
+  "@agent/gh-webhook": ["@agent/gh-webhook@workspace:apps/gh-webhook"],
+  "@agent/git": ["@agent/git@workspace:packages/git"],
+  "@agent/orchestrator": ["@agent/orchestrator@workspace:packages/orchestrator"]
+}
 
     "@agent/patcher": ["@agent/patcher@workspace:packages/patcher"],
 
