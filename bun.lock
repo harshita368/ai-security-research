@@ -28,6 +28,14 @@
         "@agent/sandbox": "workspace:*",
       },
     },
+    "apps/gh-webhook": {
+      "name": "@agent/gh-webhook",
+      "version": "0.1.0",
+      "dependencies": {
+        "@agent/analyzers-secret": "workspace:*",
+        "@agent/core": "workspace:*",
+      },
+    },
     "packages/analyzers-secret": {
       "name": "@agent/analyzers-secret",
       "version": "0.1.0",
@@ -60,6 +68,8 @@
     "@agent/analyzers-secret": ["@agent/analyzers-secret@workspace:packages/analyzers-secret"],
 
     "@agent/core": ["@agent/core@workspace:packages/core"],
+
+    "@agent/gh-webhook": ["@agent/gh-webhook@workspace:apps/gh-webhook"],
 
     "@agent/patcher": ["@agent/patcher@workspace:packages/patcher"],
 
