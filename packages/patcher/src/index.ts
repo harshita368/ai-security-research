@@ -44,3 +44,17 @@ export function proposeRedactionPatch(repoRoot: string, finding: VulnerabilityFi
     rationale: "Redact potential secret value with placeholder.",
   };
 }
+
+export async function proposePatch(
+  repoRoot: string,
+  finding: VulnerabilityFinding,
+  strategy: "auto" | "redact" | "llm" = "auto",
+  llm?: LLMClient,
+): Promise<PatchProposal> {
+  const strat = strategy === "auto" ? (finding.ruleId.includes("secret") ? "redact" : "llm") : strategy;
+  if (strat === "redact") return proposeRedactionPatch(repoRoot, finding);
+  if (!llm) throw new Error("LLM client required for llm strategy");
+  const instruction = `You are a security patching assistant. Propose a unified diff patch for file ${finding.file} addressing: ${finding.title} at lines ${finding.lineStart}-${finding.lineEnd}. Keep changes minimal and safe.`;
+  const diffText = await llm.generate(instruction);
+  return { findingId: finding.id, diffPatch: diffText, rationale: "LLM-generated patch" };
+}

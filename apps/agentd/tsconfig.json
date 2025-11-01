@@ -9,6 +9,7 @@
     { "path": "../../packages/core" },
     { "path": "../../packages/analyzers-secret" },
     { "path": "../../packages/patcher" },
-    { "path": "../../packages/sandbox" }
+    { "path": "../../packages/sandbox" },
+    { "path": "../../packages/orchestrator" }
   ]
 }

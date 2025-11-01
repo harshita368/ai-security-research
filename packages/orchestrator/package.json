@@ -1,5 +1,5 @@
 {
-  "name": "@agent/core",
+  "name": "@agent/orchestrator",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -10,6 +10,8 @@
     "typecheck": "tsc -b"
   },
   "dependencies": {
-    "@agent/git": "workspace:*"
+    "@agent/core": "workspace:*",
+    "@agent/sandbox": "workspace:*",
+    "@agent/patcher": "workspace:*"
   }
 }
