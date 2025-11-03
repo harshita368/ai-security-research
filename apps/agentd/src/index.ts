@@ -2,6 +2,7 @@
 import { Agent, scanCommitDiff } from "@agent/core";
 import SecretAnalyzer from "@agent/analyzers-secret";
 import { runPipeline } from "@agent/orchestrator";
+import { HttpLLM, proposePatch, applyUnifiedDiff } from "@agent/patcher";
 import { dockerAvailable, DockerSandbox, LocalSandbox } from "@agent/sandbox";
 
 function parseArgs(argv: string[]) {
@@ -21,7 +22,7 @@ function parseArgs(argv: string[]) {
 async function main() {
   const { cmd, opts } = parseArgs(process.argv);
   if (cmd === "help" || cmd === "--help" || cmd === "-h") {
-    console.log("Usage: agentd <analyze|scan|scan-commit|pipeline|validate> --repo <path> [--base <ref> --head <ref>] [--strategy auto|redact|llm] [--cmd <shell>] [--image <docker-image>]");
+    console.log("Usage: agentd <analyze|scan|scan-commit|pipeline|validate|propose-patch|apply-patch> --repo <path> [--base <ref> --head <ref>] [--strategy auto|redact|llm] [--cmd <shell>] [--image <docker-image>] [--file <path> --start <n> --end <m>] [--diff-file <path>]");
     process.exit(0);
   }
   const repo = opts["repo"];
@@ -70,6 +71,42 @@ async function main() {
     const res = await sandbox.run("bash", ["-lc", cmdStr], { cwd: repo, timeoutMs: 10 * 60 * 1000 });
     console.log(JSON.stringify({ exitCode: res.exitCode, stdout: res.stdout.slice(0, 2000), stderr: res.stderr.slice(0, 2000) }, null, 2));
     process.exit(res.exitCode === 0 ? 0 : 1);
+  }
+  if (cmd === "propose-patch") {
+    const file = opts["file"];
+    const start = Number(opts["start"] || "0");
+    const end = Number(opts["end"] || "0");
+    const strategy = (opts["strategy"] as any) || "redact";
+    if (!file || !start || !end) {
+      console.error("--file, --start, --end required");
+      process.exit(2);
+    }
+    const finding = {
+      id: "cli-finding",
+      file,
+      lineStart: start,
+      lineEnd: end,
+      ruleId: "cli/manual",
+      severity: "LOW" as const,
+      title: "CLI patch proposal",
+      description: "",
+    };
+    const llm = strategy === "llm" ? new HttpLLM(String(process.env.AGENT_LLM_ENDPOINT || ""), process.env.AGENT_LLM_API_KEY) : undefined;
+    const proposal = await proposePatch(repo, finding, strategy as any, llm as any);
+    console.log(proposal.diffPatch);
+    return;
+  }
+  if (cmd === "apply-patch") {
+    const diffFile = opts["diff-file"];
+    if (!diffFile) {
+      console.error("--diff-file <path> required");
+      process.exit(2);
+    }
+    const diff = Bun.file(diffFile);
+    const text = await diff.text();
+    const out = applyUnifiedDiff(repo, text);
+    console.log(JSON.stringify({ applied: out.files }, null, 2));
+    return;
   }
   console.error(`Unknown command: ${cmd}`);
   process.exit(2);
