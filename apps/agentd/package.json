@@ -16,6 +16,7 @@
     "@agent/core": "workspace:*",
     "@agent/analyzers-secret": "workspace:*",
     "@agent/sandbox": "workspace:*",
-    "@agent/patcher": "workspace:*"
+    "@agent/patcher": "workspace:*",
+    "@agent/orchestrator": "workspace:*"
   }
 }

@@ -54,3 +54,4 @@ export const newId = (() => {
 })();
 
 export { Agent } from "./agent";
+export { scanCommitDiff } from "./commit-scanner";

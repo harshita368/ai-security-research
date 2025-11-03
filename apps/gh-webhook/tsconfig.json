@@ -6,6 +6,7 @@
   },
   "include": ["src"],
   "references": [
-    { "path": "../git" }
+    { "path": "../../packages/core" },
+    { "path": "../../packages/analyzers-secret" }
   ]
 }

@@ -4,7 +4,10 @@
     { "path": "./packages/core" },
     { "path": "./packages/patcher" },
     { "path": "./packages/sandbox" },
+    { "path": "./packages/git" },
+    { "path": "./packages/orchestrator" },
     { "path": "./packages/analyzers-secret" },
-    { "path": "./apps/agentd" }
+    { "path": "./apps/agentd" },
+    { "path": "./apps/gh-webhook" }
   ]
 }

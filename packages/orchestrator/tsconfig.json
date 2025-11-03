@@ -6,6 +6,8 @@
   },
   "include": ["src"],
   "references": [
-    { "path": "../git" }
+    { "path": "../core" },
+    { "path": "../sandbox" },
+    { "path": "../patcher" }
   ]
 }
