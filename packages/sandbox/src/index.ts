@@ -1,5 +1,7 @@
 import type { ValidationResult, VulnerabilityFinding } from "@agent/core";
 import { readFileSync } from "node:fs";
+export { LocalSandbox } from "./local";
+export { DockerSandbox, dockerAvailable } from "./docker";
 
 export interface Sandbox {
   run(command: string, args?: string[], opts?: { cwd?: string; timeoutMs?: number }): Promise<{

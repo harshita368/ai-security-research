@@ -2,6 +2,7 @@
 import { Agent, scanCommitDiff } from "@agent/core";
 import SecretAnalyzer from "@agent/analyzers-secret";
 import { runPipeline } from "@agent/orchestrator";
+import { dockerAvailable, DockerSandbox, LocalSandbox } from "@agent/sandbox";
 
 function parseArgs(argv: string[]) {
   const args = argv.slice(2);
@@ -20,7 +21,7 @@ function parseArgs(argv: string[]) {
 async function main() {
   const { cmd, opts } = parseArgs(process.argv);
   if (cmd === "help" || cmd === "--help" || cmd === "-h") {
-    console.log("Usage: agentd <analyze|scan|scan-commit|pipeline> --repo <path> [--base <ref> --head <ref>] [--strategy auto|redact|llm]");
+    console.log("Usage: agentd <analyze|scan|scan-commit|pipeline|validate> --repo <path> [--base <ref> --head <ref>] [--strategy auto|redact|llm] [--cmd <shell>] [--image <docker-image>]");
     process.exit(0);
   }
   const repo = opts["repo"];
@@ -57,6 +58,18 @@ async function main() {
     const out = await runPipeline({ repoPath: repo, analyzers: [SecretAnalyzer], strategy, llmEndpoint, llmApiKey });
     console.log(JSON.stringify(out, null, 2));
     return;
+  }
+  if (cmd === "validate") {
+    const cmdStr = opts["cmd"];
+    const image = opts["image"] || "node:20-bullseye";
+    if (!cmdStr) {
+      console.error("--cmd '<shell command>' is required for validate");
+      process.exit(2);
+    }
+    const sandbox = dockerAvailable() ? new DockerSandbox(image) : new LocalSandbox();
+    const res = await sandbox.run("bash", ["-lc", cmdStr], { cwd: repo, timeoutMs: 10 * 60 * 1000 });
+    console.log(JSON.stringify({ exitCode: res.exitCode, stdout: res.stdout.slice(0, 2000), stderr: res.stderr.slice(0, 2000) }, null, 2));
+    process.exit(res.exitCode === 0 ? 0 : 1);
   }
   console.error(`Unknown command: ${cmd}`);
   process.exit(2);
